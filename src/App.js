@@ -9,7 +9,7 @@ import gun from "./stickers/gun.png";
 import knife from "./stickers/knife.png";
 
 import Header from "./components/Header";
-import Picture from "./components/Picture";
+import PictureGroup from "./components/PictureGroup";
 import Readme from "./components/Readme";
 
 import { Switch, Route, Redirect } from "react-router-dom";
@@ -20,7 +20,6 @@ const useStyles = createUseStyles((theme) => ({
     color: theme.palette.text,
     fontFamily: theme.palette.fontFamily,
     fontSize: "1.25rem",
-    boxSizing: "border-box"
   },
 
 
@@ -41,6 +40,7 @@ const useStyles = createUseStyles((theme) => ({
     padding: "1rem 0",
     color: theme.palette.textHeading,
     border: theme.palette.border,
+    textShadow:" 0px 1px 0px #000",
   },
   Main: {
     border: theme.palette.border,
@@ -76,7 +76,7 @@ const useStyles = createUseStyles((theme) => ({
       transition: "all 0.3s ease",
     },
   },
- 
+
   Gallery: {
     "& input": {
       border: theme.palette.border,
@@ -109,10 +109,9 @@ function App(props) {
     handleVideoRef, // callback function to set ref for invisible video element
     handleCanvasRef, // callback function to set ref for main canvas element
     handleCapture, // callback function to trigger taking the picture
-    picture, // latest captured picture data object
+    pictures, // all captured pictures
   ] = useWebcamCapture(sticker?.img, title);
 
-  
   return (
     <div className={classes.App}>
       <Header />
@@ -135,7 +134,7 @@ function App(props) {
             <section className={classes.Stickers}>
               <h4>Step 2: select your sticker...</h4>
               {stickers.map(item => (
-                <button  key={item.url} onClick={() => setSticker(item)}>
+                <button key={item.url} onClick={() => setSticker(item)}>
                   <img src={item.url} alt={item} />
                 </button>))
               }
@@ -147,12 +146,13 @@ function App(props) {
                 ref={handleCanvasRef}
                 width={2}
                 height={2}
-                onClick={handleCapture}
+                onClick={sticker && handleCapture}
               />
             </section>
             <section className={classes.Gallery}>
               <h4>Step 4: Cherish this moment forever</h4>
-              {picture && <Picture picture={picture} />}
+              {pictures.length > 0 && <PictureGroup pictures={pictures} />}
+             
             </section>
           </main>
         </Route>

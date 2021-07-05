@@ -3,7 +3,8 @@ import { useCallback, useEffect, useRef, useState } from "react";
 export const useWebcamCapture = (stickerImg, title) => {
   const [videoRef, setVideoRef] = useState();
   const [canvasRef, setCanvasRef] = useState();
-  const [picture, setPicture] = useState();
+  //const [picture, setPicture] = useState(); // latest captured picture data object
+  const [pictures, setPictures] = useState([]);
 
   const onVideoRef = useCallback((node) => {
     setVideoRef(node);
@@ -101,10 +102,12 @@ export const useWebcamCapture = (stickerImg, title) => {
     (ev) => {
       if (canvasRef) {
         const data = canvasRef.toDataURL("image/png");
-        setPicture({ dataUri: data, title });
+        // setPicture({ dataUri: data, title });
+        setPictures(pictures => [...pictures, { dataUri: data, title, id: Math.random() }])
       }
     },
     [canvasRef, title]
   );
-  return [onVideoRef, onCanvasRef, onCapture, picture];
+
+  return [onVideoRef, onCanvasRef, onCapture, pictures];
 };
