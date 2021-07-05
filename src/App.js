@@ -1,79 +1,100 @@
 import { useState } from "react";
 import { createUseStyles } from "react-jss";
 import { useWebcamCapture } from "./useWebcamCapture";
-// import logo from './logo.svg'
-import logo from "./stickers/slap.png";
-import fist from "./stickers/fist.png";
 
-import { Link, Switch, Route, Redirect } from "react-router-dom";
+// import stickers
+import slap from "./stickers/slap.png";
+import fist from "./stickers/fist.png";
+import gun from "./stickers/gun.png";
+import knife from "./stickers/knife.png";
+
+import Header from "./components/Header";
+import Picture from "./components/Picture";
+import Readme from "./components/Readme";
+
+import { Switch, Route, Redirect } from "react-router-dom";
 
 const useStyles = createUseStyles((theme) => ({
   "@global body": {
     background: theme.palette.background,
     color: theme.palette.text,
-    fontFamily: "sans-serif",
+    fontFamily: theme.palette.fontFamily,
+    fontSize: "1.25rem",
+    boxSizing: "border-box"
   },
+
 
   App: {
     padding: "20px",
     background: theme.palette.primary,
     maxWidth: "800px",
-    minHeight: "600px",
+    width: "90%",
     margin: "auto",
     "& a": {
       color: theme.palette.text,
     },
   },
-  Header: {
-    "&  h1": {
-      fontFamily: "sans-serif",
-      cursor: "pointer",
-      fontSize: "4rem",
-    },
+  Title: {
+    textAlign: "center",
+    fontSize: "1.5rem",
+    fontWeight: "700",
+    padding: "1rem 0",
+    color: theme.palette.textHeading,
+    border: theme.palette.border,
   },
   Main: {
-    background: theme.palette.secondary,
-
+    border: theme.palette.border,
+    padding: "0 1rem"
+  },
+  Canvas: {
+    background: theme.palette.background,
     "& canvas": {
       width: "100%",
       height: "auto",
+      cursor: "pointer",
     },
     "& video": {
       display: "none",
     },
   },
   Stickers: {
+    "& button": {
+      marginRight: "1rem",
+      marginBottom: "1rem",
+      border: theme.palette.border,
+      background: theme.palette.primary,
+      cursor: "pointer",
+
+      "&:hover": {
+        "& img": {
+          transform: "scale(1.1)"
+        },
+      },
+    },
     "& img": {
       height: "4rem",
+      transition: "all 0.3s ease",
     },
   },
+ 
   Gallery: {
+    "& input": {
+      border: theme.palette.border,
+      padding: "4px 8px",
+    },
     "& img": {
-      height: "16rem",
+      maxHeight: "16rem",
     },
   },
-  Picture: {
-    background: "black",
-    padding: 4,
-    position: "relative",
-    display: "inline-block",
-    "& h3": {
-      padding: 8,
-      textAlign: "center",
-      width: "100%",
-    },
-  },
+
 }));
 
 
-//const logos = ['slap.png', 'fist.png', 'gun.png', 'knife.png'];
-
-const stickers = [fist].map((url) => {
+const stickers = [slap, fist, gun, knife].map((url) => {
   const img = document.createElement("img");
   img.src = url;
   return { img, url };
 });
-
 
 function App(props) {
   // css classes from JSS hook
@@ -91,31 +112,20 @@ function App(props) {
     picture, // latest captured picture data object
   ] = useWebcamCapture(sticker?.img, title);
 
+  
   return (
     <div className={classes.App}>
-      <header className={classes.Header}>
-        <h1>SlapSticker</h1>
-        <p>
-          Have you ever said something so dumb, you just wanted to slap
-          yourself? Well now you can!
-        </p>
-        <nav>
-          <ul>
-            <li>
-              <Link to="/">home</Link>
-            </li>
-            <li>
-              <Link to="/readme">readme</Link>
-            </li>
-          </ul>
-        </nav>
-      </header>
+      <Header />
       <Switch>
-        /** * Main app route */
+        {/** * Main app route */}
         <Route path="/" exact>
-          <main>
+          <p className={classes.Title}>
+            Have you ever said something so dumb, you just wanted to slap
+            yourself? Well now you can!
+          </p>
+          <main className={classes.Main}>
             <section className={classes.Gallery}>
-              Step one: Give it a name
+              <h4>Step one: Give it a name</h4>
               <input
                 type="text"
                 value={title}
@@ -123,13 +133,15 @@ function App(props) {
               />
             </section>
             <section className={classes.Stickers}>
-              Step 2: select your sticker...
-              <button onClick={() => setSticker(stickers[0])}>
-                <img src={img.url} />
-              </button>
+              <h4>Step 2: select your sticker...</h4>
+              {stickers.map(item => (
+                <button  key={item.url} onClick={() => setSticker(item)}>
+                  <img src={item.url} alt={item} />
+                </button>))
+              }
             </section>
-            <section className={classes.Main}>
-              Step three: Slap your self!
+            <section className={classes.Canvas}>
+              <h4>Step three: Slap your self!</h4>
               <video ref={handleVideoRef} />
               <canvas
                 ref={handleCanvasRef}
@@ -139,81 +151,14 @@ function App(props) {
               />
             </section>
             <section className={classes.Gallery}>
-              Step 4: Cherish this moment forever
-              {picture && (
-                <div className={classes.Picture}>
-                  <img src={picture.dataUri} />
-                  <h3>{picture.title}</h3>
-                </div>
-              )}
+              <h4>Step 4: Cherish this moment forever</h4>
+              {picture && <Picture picture={picture} />}
             </section>
           </main>
         </Route>
-        /** * Readme route */
+        {/** * Readme route */}
         <Route path="/readme">
-          <main>
-            <h2>Devtest Readme</h2>
-            <p>
-              Hello candidate, Welcome to our little dev test. The goal of this
-              exercise, is to asses your general skill level, and give us
-              something to talk about at our next appointment.
-            </p>
-            <section>
-              <h3>What this app should do</h3>
-              <p>
-                SlapSticker is an app that lets users to slap stickers on their
-                face, using their webcam. Functionality wise the app works, but
-                the ui needs some love. We'd like for you to extend this
-                prototype to make it look and feel it bit better.
-              </p>
-              <p>These are the basic requirements:</p>
-              <ul>
-                <li>User can pick a sticker</li>
-                <li>User can give the captured image a title</li>
-                <li>User can place the sticker over the webcam image</li>
-                <li>User can capture the webcam image with sticker</li>
-              </ul>
-            </section>
-            <section>
-              <h3>What we want you to do</h3>
-              <p>
-                Off course we didn't expect you to build a full fledged app in
-                such a short time frame. That's why the basic requirements are
-                already implemented.
-              </p>
-              <p>
-                However, we would like for you to show off your strengths as a
-                developer by improving the app.
-              </p>
-              <p>Some ideas (no need to do all):</p>
-              <ul>
-                <li>Make it look really nice</li>
-                <li>Let users pick from multiple (custom) stickers</li>
-                <li>Improve the workflow and ux</li>
-                <li>Show multiple captured images in a gallery</li>
-                <li>Let users download or share the captured pics</li>
-                <li>Add super cool effects to webcam feed</li>
-                <li>Organize, document and test the code</li>
-                <li>Integrate with zoom, teams, meet...</li>
-              </ul>
-            </section>
-            <section>
-              <h3> quickstart</h3>
-              <ul>
-                <li>You can clone this repo to get started </li>
-                <li>run `$ npm install` to install deps</li>
-                <li>run `$ npm run start` to start dev environment</li>
-                <li>push it to github or gitlab to share it with us. </li>
-              </ul>
-            </section>
-            <section>
-              <p>
-                P.s. We've already added some libraries to make your life easier
-                (Create React App, Jss, React Router), but feel free to add
-                more.
-              </p>
-            </section>
-          </main>
+          <Readme />
         </Route>
         <Redirect to="/" />
       </Switch>
