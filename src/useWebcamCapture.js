@@ -103,11 +103,17 @@ export const useWebcamCapture = (stickerImg, title) => {
       if (canvasRef) {
         const data = canvasRef.toDataURL("image/png");
         // setPicture({ dataUri: data, title });
-        setPictures(pictures => [...pictures, { dataUri: data, title, id: Math.random() }])
+        setPictures(pictures => [...pictures, { dataUri: data, title, id: Math.random().toString() }])
       }
     },
     [canvasRef, title]
   );
 
-  return [onVideoRef, onCanvasRef, onCapture, pictures];
+  const onDeletePicture = useCallback(
+    (pictureId) => {
+      setPictures(prev => prev.filter(picture => picture.id !== pictureId))
+    }, [pictures]
+  );
+
+  return [onVideoRef, onCanvasRef, onCapture, onDeletePicture, pictures];
 };

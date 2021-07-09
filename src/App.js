@@ -22,7 +22,6 @@ const useStyles = createUseStyles((theme) => ({
     fontSize: "1.25rem",
   },
 
-
   App: {
     padding: "20px",
     background: theme.palette.primary,
@@ -40,7 +39,7 @@ const useStyles = createUseStyles((theme) => ({
     padding: "1rem 0",
     color: theme.palette.textHeading,
     border: theme.palette.border,
-    textShadow:" 0px 1px 0px #000",
+    textShadow: " 0px 1px 0px #000",
   },
   Main: {
     border: theme.palette.border,
@@ -89,7 +88,6 @@ const useStyles = createUseStyles((theme) => ({
 
 }));
 
-
 const stickers = [slap, fist, gun, knife].map((url) => {
   const img = document.createElement("img");
   img.src = url;
@@ -109,6 +107,7 @@ function App(props) {
     handleVideoRef, // callback function to set ref for invisible video element
     handleCanvasRef, // callback function to set ref for main canvas element
     handleCapture, // callback function to trigger taking the picture
+    handleDeleteCapture, // callback function to trugger delete picture
     pictures, // all captured pictures
   ] = useWebcamCapture(sticker?.img, title);
 
@@ -151,8 +150,7 @@ function App(props) {
             </section>
             <section className={classes.Gallery}>
               <h4>Step 4: Cherish this moment forever</h4>
-              {pictures.length > 0 && <PictureGroup pictures={pictures} />}
-             
+              {pictures.length > 0 && <PictureGroup handleDelete={handleDeleteCapture} pictures={pictures} />}
             </section>
           </main>
         </Route>

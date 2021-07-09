@@ -64,9 +64,13 @@ const Picture = (props) => {
     const { picture } = props;
     const classes = useStyles(props);
 
+    const deletePictureHandler = () => {
+        props.onDelete(picture.id)
+    }
+
     return (
         <div className={classes.Picture}>
-            {/* <button className={classes.DeleteBtn} onClick={props.onDelete} value={picture.id}>X</button> */}
+            <button className={classes.DeleteBtn} onClick={deletePictureHandler}>X</button>
             <img src={picture.dataUri} alt={picture.dataUri} />
             <h3>{picture.title}</h3>
             <div className={classes.ButtonsGroup}>
