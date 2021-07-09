@@ -112,7 +112,7 @@ export const useWebcamCapture = (stickerImg, title) => {
   const onDeletePicture = useCallback(
     (pictureId) => {
       setPictures(prev => prev.filter(picture => picture.id !== pictureId))
-    }, [pictures]
+    }, []
   );
 
   return [onVideoRef, onCanvasRef, onCapture, onDeletePicture, pictures];
